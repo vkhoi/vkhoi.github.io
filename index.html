@@ -2,4 +2,16 @@
 layout: default
 title: vkhoi
 ---
-<h1>Hello World!</h1>
+<div class="table-of-contents row">
+	<h2 class="font-bold">Notes</h2>
+	<ul>
+		{% for post in site.posts %}
+	    	<li>
+	    		<a href="{{ post.url }}" title="{{ post.title }}">
+	    			<span class="font-light fs16">{{ post.title }}</span>
+	    			<span class="font-light fs16">{{ post.date | date_to_string }}</span>
+	    		</a>
+	    	</li>
+	  	{% endfor %}
+	</ul>
+</div>
