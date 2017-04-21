@@ -109,3 +109,26 @@ It can be seen from the above figure that the coefficients with high amplitude a
 As mentioned above, ignoring high frequency terms will fail with image that has a lot of texture. In order to overcome this, JPEG divides the input image into non-overlapping square sub-blocks (\\(8 \times 8\\)) and perform DCT transformation on each individual sub-block. This idea comes from the fact that pixels in a local region are highly correlated, so these divided sub-blocks would not contain a whole bunch of different texture and DCT will work very well with each of them. Moreover, dividing the image into smaller blocks also help reduce the total time complexity.\\
 \\(\\)
 ### 7. Code
+The SciPy package contains the *fftpack* with the *dct* function that computes the DCT coefficients for a given signal. Folliwng is the code to compute the DCT coefficients, by using the SciPy package and by using matrix multiplication.
+
+```python
+def get_2d_dct(im, use_scipy=False):
+    if use_scipy:
+        return fftpack.dct(fftpack.dct(im.T, norm='ortho').T, norm='ortho')
+        
+    N = im.shape[0]
+    
+    a = [(1/N)**0.5 if k == 0 else (2/N)**0.5 for k in range(N)]
+    
+    C = np.zeros([N, N])
+    
+    for k in range(N):
+        for n in range(N):
+            C[k][n] = a[k]*math.cos(math.pi*(2*n+1)*k/2/N)
+    
+    res = np.dot(C, im)
+    res = np.dot(res, C.T)
+    
+    return res
+```
+
