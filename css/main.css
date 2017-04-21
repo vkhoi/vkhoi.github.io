@@ -5,6 +5,7 @@ body {
 	color: #3a4145;
 
 	font-family: 'Noto Serif', serif;
+	font-size: 100%;
 }
 
 p {
@@ -65,4 +66,15 @@ h1 {
 
 .table-of-contents li a span:nth-child(2) {
 	float: right;
+}
+
+.post-content img {
+	max-width: 80%;
+	margin-bottom: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+.center-image {
+	margin: 0 auto;
+	display: block;
 }
