@@ -48,6 +48,10 @@ h1 {
 	color: black;
 }
 
+#footer {
+	height: 12.5rem;
+}
+
 #main {
 	max-width: 52rem;
 }

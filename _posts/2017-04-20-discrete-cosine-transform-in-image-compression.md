@@ -106,29 +106,145 @@ The efficiency of a transformation coding is based on its ability to transform t
 It can be seen from the above figure that the coefficients with high amplitude are not only compacted closely together but they are also distributed around the top-left region. Thus, it is intuitive to say that by using only the low frequency DCT basis vectors, we are still able to reproduce the image. It turns out that the coefficients with low frequency represent the general shape and pattern of the image, while the coefficients with high frequency represent texture, edge, and corner. So if the image we are working on is rich in texture, ignoring the high frequency terms may lead to very ugly result.\\
 \\(\\)
 ### 6. How DCT is used in JPEG
-As mentioned above, ignoring high frequency terms will fail with image that has a lot of texture. In order to overcome this, JPEG divides the input image into non-overlapping square sub-blocks (\\(8 \times 8\\)) and perform DCT transformation on each individual sub-block. This idea comes from the fact that pixels in a local region are highly correlated, so these divided sub-blocks would not contain a whole bunch of different texture and DCT will work very well with each of them. Moreover, dividing the image into smaller blocks also help reduce the total time complexity.\\
+As mentioned above, ignoring high frequency terms will fail with image that has a lot of texture. In order to overcome this, JPEG divides the input image into non-overlapping square sub-blocks (\\(8 \times 8\\)) and perform DCT transformation on each individual sub-block. This idea comes from the fact that pixels in a local region are highly correlated, so these divided sub-blocks would not contain a whole bunch of different texture and DCT will work very well with each of them. Moreover, dividing the image into smaller blocks also help reduce the total time complexity.
+
+JPEG does not just ignore high frequency coefficients at random. Given \\(M\\) as the number of coefficients to keep, JPEG will choose the smallest \\(M\\) lowest frequency terms by going in the zig-zag order starting from the top-left of the image. The order to choose the coefficients is presented below.
+
+![img6](/assets/dct_example6.png){: .center-image}
+**Figure 4.** The order to choose the coefficients in JPEG.
+
 \\(\\)
 ### 7. Code
-The SciPy package contains the *fftpack* with the *dct* function that computes the DCT coefficients for a given signal. Folliwng is the code to compute the DCT coefficients, by using the SciPy package and by using matrix multiplication.
+The SciPy package contains the *fftpack* with the *dct* function that computes the DCT coefficients for a given signal. Followng is the code to compute the DCT coefficients, by using the SciPy package and by using matrix multiplication.
 
 ```python
 def get_2d_dct(im, use_scipy=False):
+    # Flag to indicate whether to use the SciPy package.
     if use_scipy:
         return fftpack.dct(fftpack.dct(im.T, norm='ortho').T, norm='ortho')
-        
+    
+    # Get the signal's length.
     N = im.shape[0]
     
+    # Compute the constant scaling factor alpha.
     a = [(1/N)**0.5 if k == 0 else (2/N)**0.5 for k in range(N)]
     
+    # Create matrix C that holds the basis cosine vectors.
     C = np.zeros([N, N])
-    
     for k in range(N):
         for n in range(N):
             C[k][n] = a[k]*math.cos(math.pi*(2*n+1)*k/2/N)
     
+    # Transforms the input image onto this basis.
     res = np.dot(C, im)
     res = np.dot(res, C.T)
     
     return res
 ```
 
+The inverse DCT transform is similar.
+
+```python
+def get_2d_idct(dct, use_scipy=False):
+    # Flag to indicate whether to use the SciPy package.
+    if use_scipy:
+        return fftpack.idct(fftpack.idct(coefficients.T, norm='ortho').T, norm='ortho')
+
+    # Get the signal's length.
+    N = dct.shape[0]
+    
+    # Compute the constant scaling factor alpha.
+    a = [(1/N)**0.5 if k == 0 else (2/N)**0.5 for k in range(N)]
+    
+    # Create matrix C that holds the basis cosine vectors.
+    C = np.zeros([N, N])
+    for k in range(N):
+        for n in range(N):
+            C[k][n] = a[k]*math.cos(math.pi*(2*n+1)*k/2/N)
+    
+    # Inverse transform.
+    res = np.dot(C.T, dct)
+    res = np.dot(res, C)
+    
+    return res
+```
+
+The aforementioned JPEG order to choose the lowest frequecy coefficients is implemented as follows.
+
+```python
+# Get next cell in the JPEG order.
+def get_next_cell(cell, N):
+    # r: row index; c: column index; d: direction we are going - 0 if going down, 1 if going up.
+    r, c, d = cell
+    if r == 0 and c % 2 == 0:
+        c += 1
+        d = 0
+        if c >= N:
+            r += 1
+            c = N-1
+    elif c == 0 and r % 2 == 1:
+        r += 1
+        d = 1
+        if r >= N:
+            c += 1
+            r = N-1
+    else:
+        if d == 0:
+            r += 1
+            c -= 1
+        else:
+            r -= 1
+            c += 1
+    return (r, c, d)
+```
+
+The main processing code: we will perform the DCT transformation on an input image and reconstruct it using \\(20, 40, 60, ..., 2000\\) coefficients. 
+
+```python
+# Input image in grayscale.
+IMAGE_NAME = 'data/messi.jpg'
+im = cv2.imread(IMAGE_NAME, 0)
+
+# Get image size. For simplicity, we only work with square image.
+N = im.shape[0]
+
+# Compute the DCT coefficients.
+dct = get_2d_dct(im, use_scipy=True)
+
+fig = plt.figure(figsize=(14, 14))
+
+# Starting from 0 coefficient, at each step, we choose 20 more coefficients.
+step = 20
+
+# The first cell starts from (0, 0).
+cell = (0, 0, 0)
+
+# Quantized DCT coefficients.
+# We choose to keep the lowest coefficients which is similar to that of JPEG. 
+quantized_dct = np.zeros([N, N])
+
+# Index of the image for plotting.
+idx = 0
+
+# 100 steps.
+for i in range(100):
+    idx += 1
+    
+    # Choose additionally more $step$ coefficients.
+    for j in range(step):
+        cell = get_next_cell(cell, N)
+        quantized_dct[cell[0]][cell[1]] = dct[cell[0]][cell[1]]
+    
+    # Reconstruct.
+    reconstructed = get_2d_idct(quantized_dct, use_scipy=True)
+    
+    # Plot.
+    ax = fig.add_subplot(10, 10, idx)
+    ax.axis('off')
+    ax.imshow(reconstructed, cmap=plt.cm.gray)
+```
+
+Here is the plot of the result.
+
+![img7](/assets/dct_example7.png){: .center-image}
+**Figure 5.** The reconstruction process of an image. From top to bottom, left to right: choose \\(20, 40, 60, ..., 2000\\) lowest frequency coefficients to reconstruct.
