@@ -96,22 +96,27 @@ Following is the illustration of the 2-dimensional DCT basis vectors. As they ar
 Now that we got a hold of the mechanism of the DCT. Next, we shall explore an interesting property that makes it possible to do quantization on the coefficients and compress an image.\\
 \\(\\)
 ### 5. Energy Compaction of the DCT
-The efficiency of a transformation coding is based on its ability to transform the input signal into as few coefficients as possible. Therefore, it becomes feasible to ignore a large number of those with small amplitudes and achieve compression. Following are examples of the DCT coefficients computed on some images.
+The efficiency of a transformation coding is based on its ability to transform the input signal into as few coefficients as possible. Therefore, it becomes feasible to perform significant quantization on those with small amplitudes and achieve compression. Following are examples of the DCT coefficients computed on some images.
 
 ![img3](/assets/dct_example3.png){: .center-image}
 ![img4](/assets/dct_example4.png){: .center-image}
 ![img5](/assets/dct_example5.png){: .center-image}
 **Figure 3.** On each row: left - original image with size \\(250 \times 250\\); center - the first \\(50 \times 50\\) DCT coefficients (also the \\(50 \times 50\\) coefficients with lowest frequency); right - reconstruct the image using the first \\(100 \times 100\\) coefficients.
 
-It can be seen from the above figure that the coefficients with high amplitude are not only compacted closely together but they are also distributed around the top-left region. Thus, it is intuitive to say that by using only the low frequency DCT basis vectors, we are still able to reproduce the image. It turns out that the coefficients with low frequency represent the general shape and pattern of the image, while the coefficients with high frequency represent texture, edge, and corner. So if the image we are working on is rich in texture, ignoring the high frequency terms may lead to very ugly result.\\
+It can be seen from the above figure that the coefficients with high amplitude are not only compacted closely together but they are also distributed around the top-left region. Thus, it is intuitive to say that by using only the low frequency DCT basis vectors, we are still able to reproduce the image. It turns out that the coefficients with low frequency represent the general shape and pattern of the image, while the coefficients with high frequency represent texture, edge, and corner. So if the image we are working on is rich in texture, quantizing the high frequency terms may lead to ugly result.\\
 \\(\\)
 ### 6. How DCT is used in JPEG
-As mentioned above, ignoring high frequency terms will fail with image that has a lot of texture. In order to overcome this, JPEG divides the input image into non-overlapping square sub-blocks (\\(8 \times 8\\)) and perform DCT transformation on each individual sub-block. This idea comes from the fact that pixels in a local region are highly correlated, so these divided sub-blocks would not contain a whole bunch of different texture and DCT will work very well with each of them. Moreover, dividing the image into smaller blocks also help reduce the total time complexity.
+As mentioned above, quantizing high frequency terms will fail with image that has a lot of texture. In order to overcome this, JPEG divides the input image into non-overlapping square sub-blocks (\\(8 \times 8\\)) and perform DCT transformation on each individual sub-block. This idea comes from the fact that pixels in a local region are highly correlated, so these divided sub-blocks would not contain a whole bunch of different texture, the coefficients will be compacted in the low frequency region, and the DCT will work very well with each sub-block. Moreover, dividing the image into smaller blocks also help reduce the total time complexity. Following is the quantization table that JPEG uses for each sub-block.
 
-JPEG does not just ignore high frequency coefficients at random. Given \\(M\\) as the number of coefficients to keep, JPEG will choose the smallest \\(M\\) lowest frequency terms by going in the zig-zag order starting from the top-left of the image. The order to choose the coefficients is presented below.
+![img8](/assets/dct_example8.png){: .center-image}
+**Figure 4.** The JPEG quantization table. The sub-block's DCT coefficients are divided by the corresponding number in the table (component-wise).
+
+The quantization process reduces the quality of the image, and it explains why the image's quality becomes worse when you keep saving a JPEG image over and over. It can be seen from the above table that the high frequency region (the bottom-right conner) contains very large number, which makes the high frequency DCT coefficients likely become zero.
+
+JPEG also applies zero run-length coding when storing the DCT coefficients, since the high frequency coefficients are likely zero. JPEG goes in the zig-zag order starting from the top-left of the sub-block, and stops when it reaches a point where all the cofficients after it are zero. After that, JPEG shall apply Huffman coding in order to compress the remaining DCT values.
 
 ![img6](/assets/dct_example6.png){: .center-image}
-**Figure 4.** The order to choose the coefficients in JPEG.
+**Figure 5.** The zig-zag order of JPEG. This is also the order from low to high frequency of the coefficients. 
 
 \\(\\)
 ### 7. Code
@@ -247,4 +252,4 @@ for i in range(100):
 Here is the plot of the result.
 
 ![img7](/assets/dct_example7.png){: .center-image}
-**Figure 5.** The reconstruction process of an image. From top to bottom, left to right: choose \\(20, 40, 60, ..., 2000\\) lowest frequency coefficients to reconstruct.
+**Figure 6.** The reconstruction process of an image. From top to bottom, left to right: choose \\(20, 40, 60, ..., 2000\\) lowest frequency coefficients to reconstruct.
