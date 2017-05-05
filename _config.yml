@@ -1,7 +1,8 @@
-name:           vkhoi
-markdown:       kramdown
-highlighter:    rouge
+name:             vkhoi
+google_analytics: UA-74800585-2
+markdown:         kramdown
+highlighter:      rouge
 kramdown:
-    input: GFM
-    hard_wrap: false
-permalink:      /notes/:title
+    input:        GFM
+    hard_wrap:    false
+permalink:        /notes/:title
