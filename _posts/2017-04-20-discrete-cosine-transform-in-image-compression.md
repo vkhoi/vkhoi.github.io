@@ -3,6 +3,9 @@ layout: post
 title: Discrete Cosine Transform in Image Compression
 date: 2017-04-20
 ---
+* #table of content
+{:toc}
+
 ### 1. Introduction
 **Discrete Cosine Transform (DCT)** is an algorithm that takes an input signal and represents it using an orthonormal basis. The DCT is similar to the **Discrete Fourier Transform (DFT)**. However, while the DFT's basis functions are in complex exponential form (\\(e^{ix}\\)), which can be decomposed into both cosine and sine functions, the DCT only depends on cosine functions to represent the signal. The DCT can also be thought as a **transform coding** operation that attempts to decorrelate the input signal into independent terms, thus reduces the redundancy in the data and provides compression capability.
 

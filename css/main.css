@@ -49,7 +49,7 @@ h1 {
 }
 
 #footer {
-	height: 12.5rem;
+	height: 10rem;
 }
 
 #main {
@@ -81,4 +81,9 @@ h1 {
 .center-image {
 	margin: 0 auto;
 	display: block;
+}
+
+#markdown-toc {
+	list-style: none;
+	padding: 0;
 }
