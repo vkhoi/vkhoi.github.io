@@ -139,23 +139,22 @@ displayImage(g)
 Next, we pad the filter with \\(0\\) so that it has the same size as the input image. Because the convolution operator in image processing and the **convolve** function that we used above uses the middle element of the filter as the center, while in signal processing the convolution operator centers at the first element of the filter, we need to shift the filter \\(H\\) before performing Fourier transform so that the filter's center lies at the first element.
 
 ```python
-M = G.shape[0]
-N = G.shape[1]
+M = g.shape[0]
+N = g.shape[1]
 
 # Pad the filter with 0.
-H_pad = np.zeros((M, N))
-H_pad[(M-H.shape[0])//2:(M-H.shape[0])//2+H.shape[0],(N-H.shape[1])//2:(N-H.shape[1])//2+H.shape[1]] = H
+h_pad = np.zeros((M, N))
+h_pad[(M-h.shape[0])//2:(M-h.shape[0])//2+h.shape[0],(N-h.shape[1])//2:(N-h.shape[1])//2+h.shape[1]] = h
 
 # Shift the filter so that its center lies at the first element, aka H[0,0].
-H_pad = scipy.fftpack.ifftshift(H_pad)
+h_pad = scipy.fftpack.ifftshift(h_pad)
 ```
 
 Next, we compute the Fourier transform.
 
 ```python
-FI = scipy.fftpack.fft2(img)
-FG = scipy.fftpack.fft2(G)
-FH = scipy.fftpack.fft2(H_pad)
+G = scipy.fftpack.fft2(g)
+H = scipy.fftpack.fft2(h_pad)
 ```
 
 And perform inverse filtering.
@@ -165,19 +164,19 @@ And perform inverse filtering.
 threshold = 0.005
 
 # Create array to store the pseudo-inverse filter.
-FH_ = np.zeros(G.shape, dtype=np.complex)
+H_inv = np.zeros(G.shape, dtype=np.complex)
 
-for r in range(FH.shape[0]):
-    for c in range(FH.shape[1]):
+for r in range(H.shape[0]):
+    for c in range(H.shape[1]):
     	# Compute the magnitude and compare it with threshold.
-        mag = np.abs(FH[r,c])
+        mag = np.abs(H[r,c])
         if mag <= threshold:
-            FH_[r,c] = 0
+            H_inv[r,c] = 0
         else:
-            FH_[r,c] = 1.0 / FH[r,c]
+            H_inv[r,c] = 1.0 / H[r,c]
 
 # Compute the approximated Fourier transform of the original image.
-F = FG * FH_
+F = G * H_inv
 
 # Inverse the Fourier transform to get the original image.
 f = scipy.fftpack.ifft2(F)
