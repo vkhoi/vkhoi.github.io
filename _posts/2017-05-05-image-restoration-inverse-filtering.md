@@ -195,4 +195,4 @@ displayImage(f)
 Following are the results with different threshold values.
 
 ![img8](/assets/inverse-filtering/thresholds.jpg){: .center-image}
-**Figure 6.** From left to right are the results with the threshold values set at \\(0.001. 0.01, 0.1\\) respectively.
+**Figure 6.** From left to right are the results with the threshold value set at \\(0.001, 0.01, 0.1\\) respectively.
