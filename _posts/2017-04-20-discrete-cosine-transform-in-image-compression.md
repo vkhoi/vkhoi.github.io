@@ -1,6 +1,5 @@
 ---
 layout: post
-title: Discrete Cosine Transform in Image Compression
 date: 2017-04-20
 ---
 * #table of content

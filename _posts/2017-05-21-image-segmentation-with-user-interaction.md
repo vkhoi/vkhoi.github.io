@@ -1,6 +1,5 @@
 ---
 layout: post
-title: Image Segmentation with User Interaction
 date: 2017-05-21
 ---
 * #table of content

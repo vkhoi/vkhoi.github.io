@@ -1,15 +1,65 @@
 ---
 layout: default
-title: Khoi Viet Pham
 ---
+<div class="row">
+	<h3 class="font-bold">Internships</h2>
+	<div class="row">
+		<div class="col-sm-2">
+			Summer, 2018
+		</div>
+		<div class="col-sm-10">
+			Google, Software Engineering Intern, Ph.D. - Mountain View, CA, USA
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2">
+			Summer, 2016
+		</div>
+		<div class="col-sm-10">
+			Google, Software Engineering Intern - Mountain View, CA, USA
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2">
+			Summer, 2015
+		</div>
+		<div class="col-sm-10">
+			VNG Corporation, Mobile Framework Fresher - HCMC, Vietnam
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2">
+			Summer, 2014
+		</div>
+		<div class="col-sm-10">
+			Misfit, Web Developer Intern - HCMC, Vietnam
+		</div>
+	</div>
+</div>
+<div class="row clear"></div>
+<div class="row">
+	<h3 class="font-bold">Publications</h2>
+	<p>
+		1. <span class="font-bold">SHREC'17: Deformable Shape Retrieval with Missing Parts</span>, <span class="font-light">Rodola et al., in Proceedings of the Eurographics Workshop on 3D Object Retrieval, 2017.</span> [<a href="/assets/deformable-shape-retrieval-missing-parts.pdf">pdf</a>]
+		<br/>
+		2. <span class="font-bold">SHREC'17: Point-cloud Shape Retrieval of Non-rigid Toys</span>, <span class="font-light">Rodola et al., in Proceedings of the Eurographics Workshop on 3D Object Retrieval, 2017.</span> [<a href="/assets/point-cloud-shape-retrieval-non-rigid-toys.pdf">pdf</a>]
+		<br/>
+		3. <span class="font-bold">SHREC'16: Partial Shape Queries for 3D Object Retrieval</span>, <span class="font-light">Pratikakis et al., in Proceedings of the Eurographics Workshop on 3D Object Retrieval, 2016.</span> [<a href="/assets/partial-shape-queries-3d-object-retrieval.pdf">pdf</a>]
+		<br/>
+		4. <span class="font-bold">Virtual Music Teacher for New Music Learners with Optical Music Recognition</span>, <span class="font-light">Viet-Khoi Pham, Hai-Dang Nguyen, Minh-Triet Tran, in the 17th International Conference on Human-Computer Interaction, 2015.<span class="font-light"> [<a href="/assets/virtual-music-teacher.pdf">pdf</a>]
+		<br/>
+		5. <span class="font-bold">Apply Lightweight Recognition Algorithms in Optical Music Recognition</span>, <span class="font-light">Viet-Khoi Pham, Hai-Dang Nguyen, Tung-Anh Nguyen-Khac, Minh-Triet Tran, in the 7th Internation Conference on Machine Vision, 2014.</span> [<a href="/assets/apply-lightweight-omr.pdf">pdf</a>]
+	</p>
+</div>
+<div class="row clear"></div>
 <div class="table-of-contents row">
-	<h2 class="font-bold">Notes</h2>
+	<h3 class="font-bold">Study notes</h2>
 	<ul>
 		{% for post in site.posts %}
 	    	<li>
 	    		<a href="{{ post.url }}" title="{{ post.title }}">
-	    			<span class="font-light fs16">{{ post.title }}</span>
-	    			<span class="font-light fs16">{{ post.date | date_to_string }}</span>
+	    			<span>{{ post.title }}</span>
+	    			<span>{{ post.date | date_to_string }}</span>
 	    		</a>
 	    	</li>
 	  	{% endfor %}

@@ -1,6 +1,5 @@
 ---
 layout: post
-title: "Image Restoration with Inverse Filtering"
 date: 2017-05-05
 ---
 * #table of content
