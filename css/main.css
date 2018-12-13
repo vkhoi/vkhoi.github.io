@@ -79,6 +79,10 @@ h1 {
 	float: right;
 }
 
+.table-of-contents li a {
+	line-height: 1.5em;
+}
+
 .post-content img {
 	max-width: 80%;
 	margin-bottom: 1.5rem;
