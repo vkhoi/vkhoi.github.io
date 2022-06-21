@@ -1,4 +1,6 @@
 name:             vkhoi
+domain:           vkhoi.github.io
+url:              https://vkhoi.github.io
 google_analytics: UA-74800585-2
 markdown:         kramdown
 highlighter:      rouge
